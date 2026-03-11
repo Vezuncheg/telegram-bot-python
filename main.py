@@ -40,9 +40,10 @@ def echo_all(message):
         answer = response.content[0].text
         bot.reply_to(message, answer)
 
-    except Exception as e:
-        print("AI ERROR:", e)
-        bot.reply_to(message, "Ошибка при обращении к AI.")
+except Exception as e:
+    import traceback
+    traceback.print_exc()
+    bot.reply_to(message, str(e))
 
 print("Bot started")
 
