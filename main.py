@@ -28,8 +28,7 @@ try:
         bot.reply_to(message, "Hello! I'm a simple Telegram bot.")
 
     @bot.message_handler(func=lambda msg: True)
-
-        def echo_all(message):
+    def echo_all(message):
 
     user_text = message.text
 
