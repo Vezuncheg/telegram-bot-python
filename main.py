@@ -5,19 +5,25 @@ import traceback
 from dotenv import load_dotenv
 from commands import register_commands
 
+# Load environment variables
+
 load_dotenv()
 
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 ANTHROPIC_KEY = os.getenv("ANTHROPIC_API_KEY")
 
-print("BOT TOKEN:", TOKEN is not None)
-print("ANTHROPIC KEY:", ANTHROPIC_KEY is not None)
+print("TOKEN loaded:", bool(TOKEN))
+print("ANTHROPIC KEY loaded:", bool(ANTHROPIC_KEY))
+
+# Initialize bot
 
 bot = telebot.TeleBot(TOKEN)
 
-client = anthropic.Anthropic(
-api_key=ANTHROPIC_KEY
-)
+# Initialize AI client
+
+client = anthropic.Anthropic(api_key=ANTHROPIC_KEY)
+
+# Register commands
 
 register_commands(bot)
 
@@ -27,13 +33,10 @@ bot.reply_to(message, "Hello! I'm a simple Telegram AI bot.")
 
 @bot.message_handler(func=lambda message: True)
 def chat(message):
-
-```
 user_text = message.text
-print("USER:", user_text)
+print("User message:", user_text)
 
 try:
-
     response = client.messages.create(
         model="claude-3-haiku-20240307",
         max_tokens=500,
@@ -43,22 +46,16 @@ try:
     )
 
     answer = response.content[0].text
-    print("AI:", answer)
+    print("Claude answer:", answer)
 
     bot.reply_to(message, answer)
 
 except Exception as e:
-
     print("AI ERROR:")
     traceback.print_exc()
+    bot.reply_to(message, f"AI ERROR:\n{str(e)}")
 
-    bot.reply_to(
-        message,
-        f"AI ERROR:\n{str(e)}"
-    )
-```
-
-print("BOT STARTED")
+print("Bot started")
 
 bot.delete_webhook(drop_pending_updates=True)
 bot.infinity_polling()
